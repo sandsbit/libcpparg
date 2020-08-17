@@ -62,12 +62,15 @@ namespace cpparg {
     protected:
 
         NamedArgument(std::string name, std::vector<std::string> aliases, bool required,
-                std::optional<std::string> defaultValue, size_t nargs, bool isFlag,
-                std::vector<ArgumentVariant_t> variants, size_t maxCount) : name(std::move(name)), aliases(std::move(aliases)),
-                                                                            required(required), defaultValue(std::move(defaultValue)),
-                                                                            nargs(nargs), isFlag(isFlag),
-                                                                            variants(std::move(variants)), maxCount(maxCount),
-                                                                            _maxCountLeft(maxCount) {};
+                std::optional<std::string> defaultValue, std::size_t nargs, bool isFlag,
+                std::vector<ArgumentVariant_t> variants, std::size_t maxCount) : name(std::move(name)),
+                                                                                 aliases(std::move(aliases)),
+                                                                                 required(required),
+                                                                                 defaultValue(std::move(defaultValue)),
+                                                                                 nargs(nargs), isFlag(isFlag),
+                                                                                 variants(std::move(variants)),
+                                                                                 maxCount(maxCount),
+                                                                                 _maxCountLeft(maxCount) {};
 
         std::string name;
         std::vector<std::string> aliases;
@@ -75,15 +78,14 @@ namespace cpparg {
         bool required;  // ignored if is_flag is true
         std::optional<std::string> defaultValue;  // ignored if required is true
 
-        size_t nargs;  // ignored if is_flag is true or if variants is not empty
+        std::size_t nargs;  // ignored if is_flag is true or if variants is not empty
 
         bool isFlag;
         std::vector<ArgumentVariant_t> variants;  // ignored if is_flag is true
-        size_t maxCount;   // ignored if is_flag is true
+        std::size_t maxCount;   // ignored if is_flag is true
 
         // internal stuff
-
-        size_t _maxCountLeft;
+        std::size_t _maxCountLeft;
 
     };
 
