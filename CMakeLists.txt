@@ -3,4 +3,4 @@ project(libcpparg)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_library(libcpparg SHARED library.cpp library.h)
+add_library(libcpparg SHARED libcpparg/parser.cpp libcpparg/parser.h)
