@@ -30,6 +30,32 @@
 #ifndef LIBCPPARG_PARSER_H
 #define LIBCPPARG_PARSER_H
 
-void hello();
+#include "utils.h"
+
+namespace cpparg {
+
+    DLL_PUBLIC class ArgumentParser;
+
+    DLL_PUBLIC class NamedArgument {
+
+    public:
+
+        friend ArgumentParser;
+
+    };
+
+    DLL_PUBLIC class PositionalArgument {
+
+    public:
+
+        friend ArgumentParser;
+
+    };
+
+    DLL_PUBLIC class ArgumentParser {
+
+    };
+
+}
 
 #endif //LIBCPPARG_PARSER_H
