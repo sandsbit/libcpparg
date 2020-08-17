@@ -29,6 +29,30 @@
 
 #include "parser.h"
 
-#include <iostream>
+#include <string>
+#include <vector>
+#include <cstddef>
+#include <sstream>
+#include <iterator>
 
-long long int cpparg::PositionalArgument::positionCount = 0;
+namespace cpparg {
+
+long long int PositionalArgument::positionCount = 0;
+
+cpparg::ParsingResult ArgumentParser::parse(std::size_t argc, char **argv) const {
+    return parse(std::vector<std::string>(argv, argv + argc));
+}
+
+cpparg::ParsingResult ArgumentParser::parse(const std::string &command) const {
+    std::stringstream ss(command);
+    std::istream_iterator<std::string> begin(ss);
+    std::istream_iterator<std::string> end;
+    return parse(std::vector<std::string>(begin, end));
+}
+
+cpparg::ParsingResult ArgumentParser::parse(const std::vector<std::string> &args) const {
+    // TODO
+    return cpparg::ParsingResult();
+}
+
+}
