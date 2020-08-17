@@ -31,6 +31,4 @@
 
 #include <iostream>
 
-void hello() {
-    std::cout << "Hello, World!" << std::endl;
-}
+long long int cpparg::PositionalArgument::positionCount = 0;

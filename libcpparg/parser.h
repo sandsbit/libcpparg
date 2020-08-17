@@ -44,7 +44,7 @@ namespace cpparg {
      */
     typedef std::vector<std::string> ArgumentVariant_t;
 
-    constexpr size_t MAX_ARGS_COUNT_INF = 0;
+    constexpr std::size_t MAX_ARGS_COUNT_INF = 0;
 
     DLL_PUBLIC class ArgumentParser;
 
@@ -92,6 +92,48 @@ namespace cpparg {
     public:
 
         friend ArgumentParser;
+
+        PositionalArgument() = delete;
+        PositionalArgument(const PositionalArgument &pa) = default;
+
+        PositionalArgument& operator=(const PositionalArgument &pa) = default;
+
+        // for std::sort
+        bool operator<(const PositionalArgument &pa) const {
+            return position < pa.position;
+        }
+
+    protected:
+
+        PositionalArgument(std::string name, std::string helpName, bool required,
+                std::optional<std::string> defaultValue, std::vector<ArgumentVariant_t> variants,
+                std::size_t maxCount, std::optional<long long int> position = std::nullopt) : name(std::move(name)),
+                                                                                              helpName(std::move(helpName)),
+                                                                                              required(required),
+                                                                                              defaultValue(std::move(defaultValue)),
+                                                                                              variants(std::move(variants)),
+                                                                                              maxCount(maxCount),
+                                                                                              _maxCountLeft(maxCount) {
+            if (position)
+                this->position = position.value();
+            else
+                this->position = ++positionCount;
+        };
+
+        std::string name;
+        std::string helpName;
+
+        bool required;
+        std::optional<std::string> defaultValue;  // ignored if required is true
+
+        std::vector<ArgumentVariant_t> variants;
+        std::size_t maxCount;
+
+        long long int position; // parsing several positional arguments with same position is UB
+
+        // internal stuff
+        std::size_t _maxCountLeft;
+        static long long int positionCount;
 
     };
 
