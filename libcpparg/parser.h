@@ -31,7 +31,6 @@
 #define LIBCPPARG_PARSER_H
 
 #include <string>
-#include <utility>
 #include <vector>
 #include <optional>
 #include <cstddef>
