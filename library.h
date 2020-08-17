@@ -1,0 +1,6 @@
+#ifndef LIBCPPARG_LIBRARY_H
+#define LIBCPPARG_LIBRARY_H
+
+void hello();
+
+#endif //LIBCPPARG_LIBRARY_H
