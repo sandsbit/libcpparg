@@ -30,9 +30,21 @@
 #ifndef LIBCPPARG_PARSER_H
 #define LIBCPPARG_PARSER_H
 
+#include <string>
+#include <utility>
+#include <vector>
+#include <optional>
+
 #include "utils.h"
 
 namespace cpparg {
+
+    /**
+     * Processed argument variant.
+     */
+    typedef std::vector<std::string> ArgumentVariant_t;
+
+    constexpr size_t MAX_ARGS_COUNT_INF = 0;
 
     DLL_PUBLIC class ArgumentParser;
 
@@ -41,6 +53,37 @@ namespace cpparg {
     public:
 
         friend ArgumentParser;
+
+        NamedArgument() = delete;
+        NamedArgument(const NamedArgument &na) = default;
+
+        NamedArgument& operator=(const NamedArgument &na) = default;
+
+    protected:
+
+        NamedArgument(std::string name, std::vector<std::string> aliases, bool required,
+                std::optional<std::string> defaultValue, size_t nargs, bool isFlag,
+                std::vector<ArgumentVariant_t> variants, size_t maxCount) : name(std::move(name)), aliases(std::move(aliases)),
+                                                                            required(required), defaultValue(std::move(defaultValue)),
+                                                                            nargs(nargs), isFlag(isFlag),
+                                                                            variants(std::move(variants)), maxCount(maxCount),
+                                                                            _maxCountLeft(maxCount) {};
+
+        std::string name;
+        std::vector<std::string> aliases;
+
+        bool required;  // ignored if is_flag is true
+        std::optional<std::string> defaultValue;  // ignored if required is true
+
+        size_t nargs;  // ignored if is_flag is true or if variants is not empty
+
+        bool isFlag;
+        std::vector<ArgumentVariant_t> variants;  // ignored if is_flag is true
+        size_t maxCount;   // ignored if is_flag is true
+
+        // internal stuff
+
+        size_t _maxCountLeft;
 
     };
 
