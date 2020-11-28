@@ -35,6 +35,7 @@
 #include <vector>
 #include <optional>
 #include <cstddef>
+#include <map>
 
 #ifdef __cpp_concepts
 #include <concepts>
@@ -211,7 +212,30 @@ namespace cpparg {
     };
 
     DLL_PUBLIC class ParsingResult {
-        // TODO
+
+    public:
+
+        friend ArgumentParser;
+
+        ParsingResult() = default;
+        ParsingResult(const ParsingResult &pr) = default;
+
+        ParsingResult& operator=(const ParsingResult &pr) = default;
+
+        [[nodiscard]] std::vector<ParsedArgument> getAll(const std::string &name) const;
+        [[nodiscard]] std::optional<ParsedArgument> get(const std::string &name) const;
+
+        [[nodiscard]] inline std::optional<ParsedArgument> operator[](const std::string &name) const {
+            return get(name);
+        }
+
+    protected:
+
+        std::map< std::string, std::vector<ParsedArgument> > result;
+
+        void addParsed(const std::string& name, const std::vector<ParsedArgument>& parsed);
+        void addParsed(const std::string& name, const ParsedArgument& parsed);
+
     };
 
     DLL_PUBLIC class ArgumentParser {

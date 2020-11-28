@@ -37,22 +37,86 @@
 
 namespace cpparg {
 
-long long int PositionalArgument::positionCount = 0;
+    // --- PARSING RESULT ---
 
-cpparg::ParsingResult ArgumentParser::parse(std::size_t argc, const char **argv) const {
-    return parse(std::vector<std::string>(argv, argv + argc));
-}
+    void ParsingResult::addParsed(const std::string &name, const std::vector<ParsedArgument> &parsed) {
+#if __cplusplus > 201703L
+        bool hasName = result.contains(name);
+#else
+        bool hasName = result.count(name);
+#endif
+        if (hasName)
+            result[name].insert(std::cend(result[name]), std::cbegin(parsed), std::cend(parsed));
+        else
+            result[name] = parsed;
+    }
 
-cpparg::ParsingResult ArgumentParser::parse(const std::string &command) const {
-    std::stringstream ss(command);
-    std::istream_iterator<std::string> begin(ss);
-    std::istream_iterator<std::string> end;
-    return parse(std::vector<std::string>(begin, end));
-}
+    void ParsingResult::addParsed(const std::string &name, const ParsedArgument &parsed) {
+#if __cplusplus > 201703L
+        bool hasName = result.contains(name);
+#else
+        bool hasName = result.count(name);
+#endif
+        if (hasName)
+            result[name].emplace_back(parsed);
+        else
+            result[name] = std::vector<ParsedArgument>{parsed};
+    }
 
-cpparg::ParsingResult ArgumentParser::parse(const std::vector<std::string> &args) const {
-    // TODO
-    return cpparg::ParsingResult();
-}
+    std::vector<ParsedArgument> ParsingResult::getAll(const std::string &name) const {
+#if __cplusplus > 201703L
+        bool hasName = result.contains(name);
+#else
+        bool hasName = result.count(name);
+#endif
+        if (hasName)
+            return result.at(name);
+        else
+            return std::vector<ParsedArgument>();
+    }
 
+    std::optional<ParsedArgument> ParsingResult::get(const std::string &name) const {
+#if __cplusplus > 201703L
+        bool hasName = result.contains(name);
+#else
+        bool hasName = result.count(name);
+#endif
+
+        if (hasName) {
+            if (result.at(name).size() == 1) {
+                return result.at(name)[0];
+            } else if (result.at(name).empty()) {
+                return std::nullopt;
+            } else {
+#ifdef CPPARG_MULTIPLE_ARG_RETURN_FIRST
+                return result.at(name)[0]
+#else
+                throw std::runtime_error("Multiple parsed arguments found by given name, "
+                                         "but one asked (use ParsingResult::getAll instead)");
+#endif
+            }
+        } else {
+            return std::nullopt;
+        }
+    }
+
+    // --- PARSER ---
+
+    long long int PositionalArgument::positionCount = 0;
+
+    cpparg::ParsingResult ArgumentParser::parse(std::size_t argc, const char **argv) const {
+        return parse(std::vector<std::string>(argv, argv + argc));
+    }
+
+    cpparg::ParsingResult ArgumentParser::parse(const std::string &command) const {
+        std::stringstream ss(command);
+        std::istream_iterator<std::string> begin(ss);
+        std::istream_iterator<std::string> end;
+        return parse(std::vector<std::string>(begin, end));
+    }
+
+    cpparg::ParsingResult ArgumentParser::parse(const std::vector<std::string> &args) const {
+        // TODO
+        return cpparg::ParsingResult();
+    }
 }
