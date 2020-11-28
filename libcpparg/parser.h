@@ -143,6 +143,73 @@ namespace cpparg {
 
     };
 
+    DLL_PUBLIC class ParsedArgument {
+
+    public:
+
+        ParsedArgument(const ParsedArgument &pa) = default;
+        ParsedArgument& operator=(const ParsedArgument &pa) = default;
+
+        [[nodiscard]] std::string getString() const;
+        [[nodiscard]] char getChar() const;
+        [[nodiscard]] int getInt() const;
+        [[nodiscard]] unsigned int getUInt() const;
+        [[nodiscard]] long long int getLong() const;
+        [[nodiscard]] unsigned long long int getULong() const;
+        [[nodiscard]] float getFloat() const;
+        [[nodiscard]] double getDouble() const;
+        [[nodiscard]] long double getLongDouble() const;
+        [[nodiscard]] bool getBool() const;
+
+        inline operator std::string() const {
+            return getString();
+        }
+
+        inline operator char() const {
+            return getChar();
+        }
+
+        inline operator int() const {
+            return getInt();
+        }
+
+        inline operator unsigned int() const {
+            return getUInt();
+        }
+
+        inline operator long long int() const {
+            return getLong();
+        }
+
+        inline operator unsigned long long int() const {
+            return getULong();
+        }
+
+        inline operator float() const {
+            return getFloat();
+        }
+
+        inline operator double () const {
+            return getDouble();
+        }
+
+        inline operator long double() const {
+            return getLongDouble();
+        }
+
+        inline operator bool() const {
+            return getBool();
+        }
+
+    protected:
+
+        ParsedArgument() = default;
+        explicit ParsedArgument(std::string v) : value(std::move(v)) {};
+
+        std::string value;
+
+    };
+
     DLL_PUBLIC class ParsingResult {
         // TODO
     };
