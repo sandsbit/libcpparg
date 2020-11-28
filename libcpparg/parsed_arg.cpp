@@ -73,7 +73,7 @@ namespace cpparg {
 
     bool ParsedArgument::getBool() const {
         std::string valueLower;
-        std::transform(value.begin(), value.end(), valueLower.begin(),
+        std::transform(std::begin(value), std::end(value), valueLower.begin(),
                        [](unsigned char c){ return std::tolower(c); });
         return (value == "1" || valueLower == "true" || valueLower == "yes" || valueLower == "y");
     }
