@@ -123,10 +123,7 @@ namespace cpparg {
                                                                                   variants(std::move(variants)),
                                                                                   maxCount(maxCount),
                                                                                   _maxCountLeft(maxCount) {
-            if (position)
-                this->position = position.value();
-            else
-                this->position = ++positionCount;
+            this->position = position ? position.value() : ++positionCount;
         };
 
         std::string name;
@@ -200,9 +197,9 @@ namespace cpparg {
         [[nodiscard]] ParsingResult parse(const std::string &command) const;
         [[nodiscard]] ParsingResult parse(const std::vector<std::string> &args) const;
 
-        std::string name = "";
-        std::string description = "";
-        std::string version = "";
+        std::string name;
+        std::string description;
+        std::string version;
 
     protected:
 
