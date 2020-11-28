@@ -27,8 +27,8 @@
  *  see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef LIBCPPARG_PARSER_H
-#define LIBCPPARG_PARSER_H
+#ifndef LIBCPPARG_PARSING_UTIL_CLASSES_H
+#define LIBCPPARG_PARSING_UTIL_CLASSES_H
 
 #include <string>
 #include <utility>
@@ -37,11 +37,7 @@
 #include <cstddef>
 #include <map>
 
-#ifdef __cpp_concepts
-#include <concepts>
-#endif
-
-#include "utils.h"
+#include "../misc/utils.h"
 
 namespace cpparg {
 
@@ -68,16 +64,16 @@ namespace cpparg {
     protected:
 
         NamedArgument(std::string name, std::vector<std::string> aliases, bool required,
-                std::optional<std::string> defaultValue, std::size_t nargs, bool isFlag,
-                std::vector<ArgumentVariant_t> variants, std::size_t maxCount) :
-                                                                             name(std::move(name)),
-                                                                             aliases(std::move(aliases)),
-                                                                             required(required),
-                                                                             defaultValue(std::move(defaultValue)),
-                                                                             nargs(nargs), isFlag(isFlag),
-                                                                             variants(std::move(variants)),
-                                                                             maxCount(maxCount),
-                                                                             _maxCountLeft(maxCount) {};
+                      std::optional<std::string> defaultValue, std::size_t nargs, bool isFlag,
+                      std::vector<ArgumentVariant_t> variants, std::size_t maxCount) :
+                name(std::move(name)),
+                aliases(std::move(aliases)),
+                required(required),
+                defaultValue(std::move(defaultValue)),
+                nargs(nargs), isFlag(isFlag),
+                variants(std::move(variants)),
+                maxCount(maxCount),
+                _maxCountLeft(maxCount) {};
 
         std::string name;
         std::vector<std::string> aliases;
@@ -115,15 +111,15 @@ namespace cpparg {
     protected:
 
         PositionalArgument(std::string name, std::string helpName, bool required,
-                std::optional<std::string> defaultValue, std::vector<ArgumentVariant_t> variants,
-                std::size_t maxCount, std::optional<long long int> position = std::nullopt) :
-                                                                                  name(std::move(name)),
-                                                                                  helpName(std::move(helpName)),
-                                                                                  required(required),
-                                                                                  defaultValue(std::move(defaultValue)),
-                                                                                  variants(std::move(variants)),
-                                                                                  maxCount(maxCount),
-                                                                                  _maxCountLeft(maxCount) {
+                           std::optional<std::string> defaultValue, std::vector<ArgumentVariant_t> variants,
+                           std::size_t maxCount, std::optional<long long int> position = std::nullopt) :
+                name(std::move(name)),
+                helpName(std::move(helpName)),
+                required(required),
+                defaultValue(std::move(defaultValue)),
+                variants(std::move(variants)),
+                maxCount(maxCount),
+                _maxCountLeft(maxCount) {
             this->position = position ? position.value() : ++positionCount;
         };
 
@@ -237,68 +233,6 @@ namespace cpparg {
         void addParsed(const std::string& name, const ParsedArgument& parsed);
 
     };
-
-    DLL_PUBLIC class ArgumentParser {
-
-    public:
-
-        ArgumentParser() = default;
-        ArgumentParser(const ArgumentParser &) = delete;
-        explicit ArgumentParser(std::string name="", std::string description="", std::string version="") :
-                                                                                  name(std::move(name)),
-                                                                                  description(std::move(description)),
-                                                                                  version(std::move(version)) {};
-
-        ArgumentParser& operator=(const ArgumentParser &) = delete;
-
-        void addPositionalArgument(std::string argName, std::string helpName,
-                std::optional<long long int> position = std::nullopt, bool required = false,
-                std::optional<std::string> defaultValue = std::nullopt, std::vector<ArgumentVariant_t> variants = {},
-                std::size_t maxCount = 1) {
-            positionalArguments.emplace_back(PositionalArgument(std::move(argName), std::move(helpName),
-                    required, std::move(defaultValue),
-                    std::move(variants), maxCount, position));
-        }
-
-#ifdef __cpp_concepts
-        template<std::derived_from<std::string>... Aliases>
-#else
-        template<typename... Aliases>
-#endif
-        void addFlag(std::string argName, Aliases... aliases) {
-            namedArguments.emplace_back(NamedArgument(std::move(argName),
-                    std::vector{(std::move(aliases))...}, false, std::nullopt, 1, true, {}, 1));
-        };
-
-        void addNamedArgument(std::string argName, std::vector<std::string> aliases, bool required = false,
-                std::optional<std::string> defaultValue = std::nullopt, std::size_t nargs = 1,
-                std::vector<ArgumentVariant_t> variants = {}, std::size_t maxCount = 1) {
-            namedArguments.emplace_back(NamedArgument(std::move(argName), std::move(aliases), required,
-                    std::move(defaultValue), nargs, false, std::move(variants), maxCount));
-        };
-
-        void addNamedArgument(std::string argName, std::string alias, bool required = false,
-                              std::optional<std::string> defaultValue = std::nullopt, std::size_t nargs = 1,
-                              std::vector<ArgumentVariant_t> variants = {}, std::size_t maxCount = 1) {
-            namedArguments.emplace_back(NamedArgument(std::move(argName), {std::move(alias)}, required,
-                    std::move(defaultValue), nargs, false, std::move(variants), maxCount));
-        };
-
-        [[nodiscard]] ParsingResult parse(std::size_t argc, const char **argv) const;
-        [[nodiscard]] ParsingResult parse(const std::string &command) const;
-        [[nodiscard]] ParsingResult parse(const std::vector<std::string> &args) const;
-
-        std::string name;
-        std::string description;
-        std::string version;
-
-    protected:
-
-        std::vector<PositionalArgument> positionalArguments;
-        std::vector<NamedArgument> namedArguments;
-
-    };
-
 }
 
-#endif //LIBCPPARG_PARSER_H
+#endif //LIBCPPARG_PARSING_UTIL_CLASSES_H
