@@ -196,9 +196,9 @@ namespace cpparg {
                     std::move(defaultValue), nargs, false, std::move(variants), maxCount));
         };
 
-        ParsingResult parse(std::size_t argc, char **argv) const;
-        ParsingResult parse(const std::string &command) const;
-        ParsingResult parse(const std::vector<std::string> &args) const;
+        [[nodiscard]] ParsingResult parse(std::size_t argc, const char **argv) const;
+        [[nodiscard]] ParsingResult parse(const std::string &command) const;
+        [[nodiscard]] ParsingResult parse(const std::vector<std::string> &args) const;
 
         std::string name = "";
         std::string description = "";

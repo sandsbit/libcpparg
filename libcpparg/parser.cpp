@@ -39,7 +39,7 @@ namespace cpparg {
 
 long long int PositionalArgument::positionCount = 0;
 
-cpparg::ParsingResult ArgumentParser::parse(std::size_t argc, char **argv) const {
+cpparg::ParsingResult ArgumentParser::parse(std::size_t argc, const char **argv) const {
     return parse(std::vector<std::string>(argv, argv + argc));
 }
 
